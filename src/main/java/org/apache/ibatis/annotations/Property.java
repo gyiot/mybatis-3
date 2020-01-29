@@ -33,16 +33,12 @@ import java.lang.annotation.Target;
 public @interface Property {
 
   /**
-   * Returns the property name.
-   *
-   * @return the property name
+   * A target property name.
    */
   String name();
 
   /**
-   * Returns the property value or placeholder.
-   *
-   * @return the property value or placeholder
+   * A property value or placeholder.
    */
   String value();
 }

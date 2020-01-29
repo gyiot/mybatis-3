@@ -43,7 +43,7 @@ public final class Environment {
   }
 
   public static class Builder {
-    private final String id;
+    private String id;
     private TransactionFactory transactionFactory;
     private DataSource dataSource;
 

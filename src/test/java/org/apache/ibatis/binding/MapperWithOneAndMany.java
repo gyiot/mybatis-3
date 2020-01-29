@@ -34,7 +34,7 @@ public interface MapperWithOneAndMany {
     @Result(
        property = "author", column = "author_id",
        one = @One(select = "org.apache.ibatis.binding.BoundAuthorMapper.selectAuthor"),
-       many = @Many(select = "org.apache.ibatis.binding.BoundBlogMapper.selectPostsById"))
+       many = @Many(select = "selectPostsById"))
   })
   List<Blog> selectWithBothOneAndMany();
 

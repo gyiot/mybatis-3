@@ -74,11 +74,20 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
   }
 
   private String getDatabaseProductName(DataSource dataSource) throws SQLException {
-    try (Connection con = dataSource.getConnection()) {
+    Connection con = null;
+    try {
+      con = dataSource.getConnection();
       DatabaseMetaData metaData = con.getMetaData();
       return metaData.getDatabaseProductName();
+    } finally {
+      if (con != null) {
+        try {
+          con.close();
+        } catch (SQLException e) {
+          // ignored
+        }
+      }
     }
-
   }
 
   private static class LogHolder {

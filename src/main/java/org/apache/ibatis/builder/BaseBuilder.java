@@ -102,7 +102,7 @@ public abstract class BaseBuilder {
       return null;
     }
     try {
-      return clazz.getDeclaredConstructor().newInstance();
+      return resolveClass(alias).getDeclaredConstructor().newInstance();
     } catch (Exception e) {
       throw new BuilderException("Error creating instance. Cause: " + e, e);
     }

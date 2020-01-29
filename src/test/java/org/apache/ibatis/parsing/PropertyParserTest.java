@@ -1,26 +1,41 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Copyright 2009-2019 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.ibatis.parsing;
 
-import java.util.Properties;
-
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 class PropertyParserTest {
+  @Test
+  public void parseTest() {
+    LogFactory.useLog4JLogging();
+    Log log = LogFactory.getLog(Object.class);
+    Properties props = new Properties();
+    props.setProperty(PropertyParser.KEY_ENABLE_DEFAULT_VALUE, "true");
+    props.setProperty("id", "id");
+    props.setProperty("tableName", "members");
+    props.setProperty("orderBy:asc", "desc");
+    log.debug(PropertyParser.parse("select ${column:*} from ${tableName} where ${id} = 1", props));
+  }
 
   @Test
   void replaceToVariableValue() {
@@ -74,7 +89,8 @@ class PropertyParserTest {
     props.setProperty(PropertyParser.KEY_ENABLE_DEFAULT_VALUE, "true");
     props.setProperty(PropertyParser.KEY_DEFAULT_VALUE_SEPARATOR, "?:");
     Assertions.assertThat(PropertyParser.parse("${key?:default}", props)).isEqualTo("default");
-    Assertions.assertThat(PropertyParser.parse("SELECT * FROM ${schema?:prod}.${tableName == null ? 'users' : tableName} ORDER BY ${orderColumn}", props)).isEqualTo("SELECT * FROM prod.${tableName == null ? 'users' : tableName} ORDER BY ${orderColumn}");
+    Assertions.assertThat(PropertyParser.parse("SELECT * FROM ${schema?:prod}.${tableName == null ? 'users' : tableName} ORDER BY ${orderColumn}", props)).isEqualTo("SELECT * FROM prod.${tableName " +
+      "== null ? 'users' : tableName} ORDER BY ${orderColumn}");
     Assertions.assertThat(PropertyParser.parse("${key?:}", props)).isEmpty();
     Assertions.assertThat(PropertyParser.parse("${key?: }", props)).isEqualTo(" ");
     Assertions.assertThat(PropertyParser.parse("${key?::}", props)).isEqualTo(":");
